@@ -2,12 +2,14 @@
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace VideoPoint_WinFormsAsynAwait
 {
     public partial class MostEffectiveSalesPersonForm : Form
     {
+        private const string ConnectionString = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=AdventureWorks2017;Data Source=localhost\\SQLEXPRESS";
         private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
         public MostEffectiveSalesPersonForm()
@@ -19,19 +21,9 @@ namespace VideoPoint_WinFormsAsynAwait
 
         private void btnReportBuild_Click(object sender, EventArgs e)
         {
-            resultGrid.DataSource = null;
-
-            var command = new SqlCommand(
-                @"SELECT top 50000 *
-                  FROM Production.TransactionHistory th
-                  INNER JOIN Production.TransactionHistoryArchive tha ON th.Quantity = tha.Quantity
-                  INNER JOIN Production.Product prod ON prod.ProductId = th.ProductID
-                  WHERE th.TransactionDate > '2014-08-02'");
-
-            using (var connection = new SqlConnection("Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=AdventureWorks2017;Data Source=localhost\\SQLEXPRESS"))
+            using (var connection = CreateOpenConnection())
             {
-                connection.Open();
-
+                var command = GetReportQuery();
                 command.Connection = connection;
                 var result = command.ExecuteReader();
 
@@ -44,17 +36,9 @@ namespace VideoPoint_WinFormsAsynAwait
         private DataTable backgroundReportResult;
         private void ReportBuildBackground(object sender, DoWorkEventArgs args)
         {
-            var command = new SqlCommand(
-                @"SELECT top 50000 *
-                  FROM Production.TransactionHistory th
-                  INNER JOIN Production.TransactionHistoryArchive tha ON th.Quantity = tha.Quantity
-                  INNER JOIN Production.Product prod ON prod.ProductId = th.ProductID
-                  WHERE th.TransactionDate > '2014-08-02'");
-
-            using (var connection = new SqlConnection("Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=AdventureWorks2017;Data Source=localhost\\SQLEXPRESS"))
+            using (var connection = CreateOpenConnection())
             {
-                connection.Open();
-
+                var command = GetReportQuery();
                 command.Connection = connection;
                 var result = command.ExecuteReader();
 
@@ -72,6 +56,84 @@ namespace VideoPoint_WinFormsAsynAwait
         {
             resultGrid.DataSource = null;
             backgroundWorker.RunWorkerAsync();
+        }
+
+        private void btnIAsyncResult_Click(object sender, EventArgs e)
+        {
+            using (var connection = CreateOpenConnection())
+            {
+                connection.Open();
+                var command = GetReportQuery();
+                command.Connection = connection;
+
+                var asyncReportRunning = command.BeginExecuteReader();
+                while (!asyncReportRunning.IsCompleted)
+                {
+                }
+
+                var dataTable = new DataTable();
+                dataTable.Load(command.EndExecuteReader(asyncReportRunning));
+                resultGrid.DataSource = dataTable;
+            }
+        }
+
+        Thread reportingThread;
+        DataTable newThreadResult;
+        bool newThreadResultApplied;
+        System.Windows.Forms.Timer applyNewThreadResultWhenReady;
+        private void btnNewThread_Click(object sender, EventArgs e)
+        {
+            newThreadResult = null;
+            newThreadResultApplied = false;
+            reportingThread = new Thread(NewThreadReporting);
+            reportingThread.Start();
+
+            applyNewThreadResultWhenReady = new System.Windows.Forms.Timer();
+            applyNewThreadResultWhenReady.Interval = 500;
+            applyNewThreadResultWhenReady.Tick += (s, args) =>
+            {
+                if (!newThreadResultApplied && newThreadResult != null)
+                {
+                    resultGrid.DataSource = newThreadResult;
+                    newThreadResultApplied = true;
+                    applyNewThreadResultWhenReady.Stop();
+                }
+
+            };
+            applyNewThreadResultWhenReady.Start();
+        }
+
+        private void NewThreadReporting()
+        {
+            using (var connection = CreateOpenConnection())
+            {
+                var command = GetReportQuery();
+                command.Connection = connection;
+                var result = command.ExecuteReader();
+
+                var resultTable = new DataTable();
+                resultTable.Load(result);
+
+                newThreadResult = resultTable;
+            }
+        }
+
+        private static SqlCommand GetReportQuery()
+        {
+            return new SqlCommand(
+                @"SELECT top 50000 *
+                  FROM Production.TransactionHistory th
+                  INNER JOIN Production.TransactionHistoryArchive tha ON th.Quantity = tha.Quantity
+                  INNER JOIN Production.Product prod ON prod.ProductId = th.ProductID
+                  WHERE th.TransactionDate > '2014-08-02'");
+        }
+
+        private SqlConnection CreateOpenConnection()
+        {
+            var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+
+            return connection;
         }
     }
 }
