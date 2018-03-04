@@ -29,14 +29,15 @@
         private void InitializeComponent()
         {
             this.btnReportBuild = new System.Windows.Forms.Button();
-            this.resultGrid = new System.Windows.Forms.DataGridView();
+            this.grid = new System.Windows.Forms.DataGridView();
             this.btnBackground = new System.Windows.Forms.Button();
             this.btnIAsyncResult = new System.Windows.Forms.Button();
             this.btnNewThread = new System.Windows.Forms.Button();
             this.btnSynchronisationContext = new System.Windows.Forms.Button();
             this.btnBeginInvoke = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            ((System.ComponentModel.ISupportInitialize)(this.resultGrid)).BeginInit();
+            this.btnAsync = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
             this.SuspendLayout();
             // 
             // btnReportBuild
@@ -50,18 +51,18 @@
             this.btnReportBuild.UseVisualStyleBackColor = true;
             this.btnReportBuild.Click += new System.EventHandler(this.btnReportBuild_Click);
             // 
-            // resultGrid
+            // grid
             // 
-            this.resultGrid.AllowUserToDeleteRows = false;
-            this.resultGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.grid.AllowUserToDeleteRows = false;
+            this.grid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.resultGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.resultGrid.Location = new System.Drawing.Point(12, 41);
-            this.resultGrid.Name = "resultGrid";
-            this.resultGrid.ReadOnly = true;
-            this.resultGrid.Size = new System.Drawing.Size(1186, 540);
-            this.resultGrid.TabIndex = 1;
+            this.grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grid.Location = new System.Drawing.Point(12, 41);
+            this.grid.Name = "grid";
+            this.grid.ReadOnly = true;
+            this.grid.Size = new System.Drawing.Size(1186, 540);
+            this.grid.TabIndex = 1;
             // 
             // btnBackground
             // 
@@ -126,22 +127,33 @@
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar.TabIndex = 6;
             // 
+            // btnAsync
+            // 
+            this.btnAsync.Location = new System.Drawing.Point(651, 587);
+            this.btnAsync.Name = "btnAsync";
+            this.btnAsync.Size = new System.Drawing.Size(100, 40);
+            this.btnAsync.TabIndex = 7;
+            this.btnAsync.Text = "Async/Await";
+            this.btnAsync.UseVisualStyleBackColor = true;
+            this.btnAsync.Click += new System.EventHandler(this.btnAsync_Click);
+            // 
             // MostEffectiveSalesPersonForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1210, 640);
+            this.Controls.Add(this.btnAsync);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.btnBeginInvoke);
             this.Controls.Add(this.btnSynchronisationContext);
             this.Controls.Add(this.btnNewThread);
             this.Controls.Add(this.btnIAsyncResult);
-            this.Controls.Add(this.resultGrid);
+            this.Controls.Add(this.grid);
             this.Controls.Add(this.btnBackground);
             this.Controls.Add(this.btnReportBuild);
             this.Name = "MostEffectiveSalesPersonForm";
             this.Text = "Most Effective Sales Person";
-            ((System.ComponentModel.ISupportInitialize)(this.resultGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -149,13 +161,14 @@
         #endregion
 
         private System.Windows.Forms.Button btnReportBuild;
-        private System.Windows.Forms.DataGridView resultGrid;
+        private System.Windows.Forms.DataGridView grid;
         private System.Windows.Forms.Button btnBackground;
         private System.Windows.Forms.Button btnIAsyncResult;
         private System.Windows.Forms.Button btnNewThread;
         private System.Windows.Forms.Button btnSynchronisationContext;
         private System.Windows.Forms.Button btnBeginInvoke;
         private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button btnAsync;
     }
 }
 

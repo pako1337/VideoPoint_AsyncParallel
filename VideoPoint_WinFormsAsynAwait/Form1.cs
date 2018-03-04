@@ -28,7 +28,7 @@ namespace VideoPoint_WinFormsAsynAwait
 
                 var dataTable = new DataTable();
                 dataTable.Load(result);
-                resultGrid.DataSource = dataTable;
+                grid.DataSource = dataTable;
             }
         }
 
@@ -47,17 +47,18 @@ namespace VideoPoint_WinFormsAsynAwait
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            resultGrid.DataSource = backgroundReportResult;
+            grid.DataSource = backgroundReportResult;
         }
 
         private void btnBackground_Click(object sender, EventArgs e)
         {
-            resultGrid.DataSource = null;
+            grid.DataSource = null;
             backgroundWorker.RunWorkerAsync();
         }
 
         private void btnIAsyncResult_Click(object sender, EventArgs e)
         {
+            grid.DataSource = null;
             using (var connection = CreateOpenConnection())
             {
                 connection.Open();
@@ -70,7 +71,7 @@ namespace VideoPoint_WinFormsAsynAwait
 
                 var dataTable = new DataTable();
                 dataTable.Load(command.EndExecuteReader(asyncReportRunning));
-                resultGrid.DataSource = dataTable;
+                grid.DataSource = dataTable;
             }
         }
 
@@ -80,6 +81,7 @@ namespace VideoPoint_WinFormsAsynAwait
         System.Windows.Forms.Timer applyNewThreadResultWhenReady;
         private void btnNewThread_Click(object sender, EventArgs e)
         {
+            grid.DataSource = null;
             newThreadResult = null;
             newThreadResultApplied = false;
             reportingThread = new Thread(NewThreadReporting);
@@ -91,7 +93,7 @@ namespace VideoPoint_WinFormsAsynAwait
             {
                 if (!newThreadResultApplied && newThreadResult != null)
                 {
-                    resultGrid.DataSource = newThreadResult;
+                    grid.DataSource = newThreadResult;
                     newThreadResultApplied = true;
                     applyNewThreadResultWhenReady.Stop();
                 }
@@ -116,6 +118,7 @@ namespace VideoPoint_WinFormsAsynAwait
 
         private void btnSynchronisationContext_Click(object sender, EventArgs e)
         {
+            grid.DataSource = null;
             var syncContext = SynchronizationContext.Current;
             ThreadPool.QueueUserWorkItem(_ =>
             {
@@ -127,13 +130,14 @@ namespace VideoPoint_WinFormsAsynAwait
                     var resultTable = new DataTable();
                     resultTable.Load(result);
 
-                    syncContext.Post(__ => resultGrid.DataSource = resultTable, null);
+                    syncContext.Post(__ => grid.DataSource = resultTable, null);
                 }
             });
         }
 
         private void btnBeginInvoke_Click(object sender, EventArgs e)
         {
+            grid.DataSource = null;
             var syncContext = SynchronizationContext.Current;
             ThreadPool.QueueUserWorkItem(_ =>
             {
@@ -145,19 +149,30 @@ namespace VideoPoint_WinFormsAsynAwait
                     var resultTable = new DataTable();
                     resultTable.Load(result);
 
-                    resultGrid.BeginInvoke((Action)(() => resultGrid.DataSource = resultTable));
+                    grid.BeginInvoke((Action)(() => grid.DataSource = resultTable));
                 }
             });
         }
 
+        private async void btnAsync_Click(object sender, EventArgs e)
+        {
+            grid.DataSource = null;
+            using (var connection = CreateOpenConnection())
+            {
+                var command = GetReportQuery(connection);
+                var result = await command.ExecuteReaderAsync();
+
+                var resultTable = new DataTable();
+                resultTable.Load(result);
+
+                grid.DataSource = resultTable;
+            }
+        }
+
         private static SqlCommand GetReportQuery(SqlConnection connection)
         {
-            var command = new SqlCommand(
-                @"SELECT top 50000 *
-                  FROM Production.TransactionHistory th
-                  INNER JOIN Production.TransactionHistoryArchive tha ON th.Quantity = tha.Quantity
-                  INNER JOIN Production.Product prod ON prod.ProductId = th.ProductID
-                  WHERE th.TransactionDate > '2014-08-02'");
+            var commandText = System.IO.File.ReadAllText("BestSellingProducts.sql");
+            var command = new SqlCommand(commandText);
             command.Connection = connection;
 
             return command;
