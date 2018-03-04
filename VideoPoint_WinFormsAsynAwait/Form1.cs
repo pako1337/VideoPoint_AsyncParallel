@@ -132,6 +132,24 @@ namespace VideoPoint_WinFormsAsynAwait
             });
         }
 
+        private void btnBeginInvoke_Click(object sender, EventArgs e)
+        {
+            var syncContext = SynchronizationContext.Current;
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                using (var connection = CreateOpenConnection())
+                {
+                    var command = GetReportQuery(connection);
+                    var result = command.ExecuteReader();
+
+                    var resultTable = new DataTable();
+                    resultTable.Load(result);
+
+                    resultGrid.BeginInvoke((Action)(() => resultGrid.DataSource = resultTable));
+                }
+            });
+        }
+
         private static SqlCommand GetReportQuery(SqlConnection connection)
         {
             var command = new SqlCommand(

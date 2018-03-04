@@ -34,6 +34,7 @@
             this.btnIAsyncResult = new System.Windows.Forms.Button();
             this.btnNewThread = new System.Windows.Forms.Button();
             this.btnSynchronisationContext = new System.Windows.Forms.Button();
+            this.btnBeginInvoke = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.resultGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -104,11 +105,22 @@
             this.btnSynchronisationContext.UseVisualStyleBackColor = true;
             this.btnSynchronisationContext.Click += new System.EventHandler(this.btnSynchronisationContext_Click);
             // 
+            // btnBeginInvoke
+            // 
+            this.btnBeginInvoke.Location = new System.Drawing.Point(544, 588);
+            this.btnBeginInvoke.Name = "btnBeginInvoke";
+            this.btnBeginInvoke.Size = new System.Drawing.Size(100, 40);
+            this.btnBeginInvoke.TabIndex = 5;
+            this.btnBeginInvoke.Text = "Synchronizacja z UI";
+            this.btnBeginInvoke.UseVisualStyleBackColor = true;
+            this.btnBeginInvoke.Click += new System.EventHandler(this.btnBeginInvoke_Click);
+            // 
             // MostEffectiveSalesPersonForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1210, 640);
+            this.Controls.Add(this.btnBeginInvoke);
             this.Controls.Add(this.btnSynchronisationContext);
             this.Controls.Add(this.btnNewThread);
             this.Controls.Add(this.btnIAsyncResult);
@@ -130,6 +142,7 @@
         private System.Windows.Forms.Button btnIAsyncResult;
         private System.Windows.Forms.Button btnNewThread;
         private System.Windows.Forms.Button btnSynchronisationContext;
+        private System.Windows.Forms.Button btnBeginInvoke;
     }
 }
 
