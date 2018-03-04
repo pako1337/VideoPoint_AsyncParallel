@@ -33,6 +33,7 @@
             this.btnBackground = new System.Windows.Forms.Button();
             this.btnIAsyncResult = new System.Windows.Forms.Button();
             this.btnNewThread = new System.Windows.Forms.Button();
+            this.btnSynchronisationContext = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.resultGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -93,11 +94,22 @@
             this.btnNewThread.UseVisualStyleBackColor = true;
             this.btnNewThread.Click += new System.EventHandler(this.btnNewThread_Click);
             // 
+            // btnSynchronisationContext
+            // 
+            this.btnSynchronisationContext.Location = new System.Drawing.Point(437, 588);
+            this.btnSynchronisationContext.Name = "btnSynchronisationContext";
+            this.btnSynchronisationContext.Size = new System.Drawing.Size(100, 40);
+            this.btnSynchronisationContext.TabIndex = 4;
+            this.btnSynchronisationContext.Text = "Kontekst Synchronizacji";
+            this.btnSynchronisationContext.UseVisualStyleBackColor = true;
+            this.btnSynchronisationContext.Click += new System.EventHandler(this.btnSynchronisationContext_Click);
+            // 
             // MostEffectiveSalesPersonForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1210, 640);
+            this.Controls.Add(this.btnSynchronisationContext);
             this.Controls.Add(this.btnNewThread);
             this.Controls.Add(this.btnIAsyncResult);
             this.Controls.Add(this.resultGrid);
@@ -117,6 +129,7 @@
         private System.Windows.Forms.Button btnBackground;
         private System.Windows.Forms.Button btnIAsyncResult;
         private System.Windows.Forms.Button btnNewThread;
+        private System.Windows.Forms.Button btnSynchronisationContext;
     }
 }
 

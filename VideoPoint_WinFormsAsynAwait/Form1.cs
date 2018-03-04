@@ -23,8 +23,7 @@ namespace VideoPoint_WinFormsAsynAwait
         {
             using (var connection = CreateOpenConnection())
             {
-                var command = GetReportQuery();
-                command.Connection = connection;
+                var command = GetReportQuery(connection);
                 var result = command.ExecuteReader();
 
                 var dataTable = new DataTable();
@@ -38,8 +37,7 @@ namespace VideoPoint_WinFormsAsynAwait
         {
             using (var connection = CreateOpenConnection())
             {
-                var command = GetReportQuery();
-                command.Connection = connection;
+                var command = GetReportQuery(connection);
                 var result = command.ExecuteReader();
 
                 backgroundReportResult = new DataTable();
@@ -63,8 +61,7 @@ namespace VideoPoint_WinFormsAsynAwait
             using (var connection = CreateOpenConnection())
             {
                 connection.Open();
-                var command = GetReportQuery();
-                command.Connection = connection;
+                var command = GetReportQuery(connection);
 
                 var asyncReportRunning = command.BeginExecuteReader();
                 while (!asyncReportRunning.IsCompleted)
@@ -107,8 +104,7 @@ namespace VideoPoint_WinFormsAsynAwait
         {
             using (var connection = CreateOpenConnection())
             {
-                var command = GetReportQuery();
-                command.Connection = connection;
+                var command = GetReportQuery(connection);
                 var result = command.ExecuteReader();
 
                 var resultTable = new DataTable();
@@ -118,14 +114,35 @@ namespace VideoPoint_WinFormsAsynAwait
             }
         }
 
-        private static SqlCommand GetReportQuery()
+        private void btnSynchronisationContext_Click(object sender, EventArgs e)
         {
-            return new SqlCommand(
+            var syncContext = SynchronizationContext.Current;
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                using (var connection = CreateOpenConnection())
+                {
+                    var command = GetReportQuery(connection);
+                    var result = command.ExecuteReader();
+
+                    var resultTable = new DataTable();
+                    resultTable.Load(result);
+
+                    syncContext.Post(__ => resultGrid.DataSource = resultTable, null);
+                }
+            });
+        }
+
+        private static SqlCommand GetReportQuery(SqlConnection connection)
+        {
+            var command = new SqlCommand(
                 @"SELECT top 50000 *
                   FROM Production.TransactionHistory th
                   INNER JOIN Production.TransactionHistoryArchive tha ON th.Quantity = tha.Quantity
                   INNER JOIN Production.Product prod ON prod.ProductId = th.ProductID
                   WHERE th.TransactionDate > '2014-08-02'");
+            command.Connection = connection;
+
+            return command;
         }
 
         private SqlConnection CreateOpenConnection()
