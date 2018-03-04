@@ -35,6 +35,7 @@
             this.btnNewThread = new System.Windows.Forms.Button();
             this.btnSynchronisationContext = new System.Windows.Forms.Button();
             this.btnBeginInvoke = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.resultGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,10 +57,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.resultGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.resultGrid.Location = new System.Drawing.Point(12, 12);
+            this.resultGrid.Location = new System.Drawing.Point(12, 41);
             this.resultGrid.Name = "resultGrid";
             this.resultGrid.ReadOnly = true;
-            this.resultGrid.Size = new System.Drawing.Size(1186, 569);
+            this.resultGrid.Size = new System.Drawing.Size(1186, 540);
             this.resultGrid.TabIndex = 1;
             // 
             // btnBackground
@@ -115,11 +116,22 @@
             this.btnBeginInvoke.UseVisualStyleBackColor = true;
             this.btnBeginInvoke.Click += new System.EventHandler(this.btnBeginInvoke_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(12, 12);
+            this.progressBar.MarqueeAnimationSpeed = 1;
+            this.progressBar.Maximum = 1;
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(1186, 23);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.TabIndex = 6;
+            // 
             // MostEffectiveSalesPersonForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1210, 640);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.btnBeginInvoke);
             this.Controls.Add(this.btnSynchronisationContext);
             this.Controls.Add(this.btnNewThread);
@@ -143,6 +155,7 @@
         private System.Windows.Forms.Button btnNewThread;
         private System.Windows.Forms.Button btnSynchronisationContext;
         private System.Windows.Forms.Button btnBeginInvoke;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 
